@@ -1,6 +1,6 @@
 Package.describe({
   name: 'lmieulet:meteor-coverage-self-instrumenter',
-  version: '1.0.0',
+  version: '2.0.0',
   summary: 'This package adds coverage to lmieulet:meteor-coverage server code',
   git: 'https://github.com/serut/meteor-coverage-self-instrumenter',
   documentation: null

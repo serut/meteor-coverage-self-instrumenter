@@ -51,13 +51,13 @@ Hook.hookRunInThisContext(
 var sourceMapNotAdded = [];
 var timer = Meteor.setInterval(function () {
     if (Package["lmieulet:meteor-coverage"]){
-        if (Package["lmieulet:meteor-coverage"].SourceMap) {
+        if (Package["lmieulet:meteor-coverage"].MeteorCoverage && Package["lmieulet:meteor-coverage"].MeteorCoverage.SourceMap) {
             Meteor.clearInterval(timer);
             for (var i = 0; i < sourceMapNotAdded.length; i++) {
-                Package["lmieulet:meteor-coverage"].SourceMap.registerSourceMap(sourceMapNotAdded[i]);
+                Package["lmieulet:meteor-coverage"].MeteorCoverage.SourceMap.registerSourceMap(sourceMapNotAdded[i]);
             }
         } else {
-            console.log(name, "not initialized", Package["lmieulet:meteor-coverage"], Package["lmieulet:meteor-coverage"].SourceMap)
+            console.log(name, "not initialized", Package["lmieulet:meteor-coverage"])
         }
     } else {
         console.log(name, "not found", Object.keys(Package))
