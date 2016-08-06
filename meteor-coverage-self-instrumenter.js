@@ -18,7 +18,7 @@ var instrumenter = Instrument.createInstrumenter(opts);
 var opts = {};
 opts.verbose = true;
 opts.coverageVariable = '__coverage__'; //force this always
-console.log(name, "started");
+console.log("Self instrumentation meteor-coverage started");
 /**
  *
  * a match function with signature `fn(file)` that returns true if `file` needs to be instrumented
@@ -51,15 +51,16 @@ Hook.hookRunInThisContext(
 var sourceMapNotAdded = [];
 var timer = Meteor.setInterval(function () {
     if (Package["lmieulet:meteor-coverage"]){
-        if (Package["lmieulet:meteor-coverage"].MeteorCoverage && Package["lmieulet:meteor-coverage"].MeteorCoverage.SourceMap) {
+        if (Package["lmieulet:meteor-coverage"].default && Package["lmieulet:meteor-coverage"].default.SourceMap) {
             Meteor.clearInterval(timer);
             for (var i = 0; i < sourceMapNotAdded.length; i++) {
-                Package["lmieulet:meteor-coverage"].MeteorCoverage.SourceMap.registerSourceMap(sourceMapNotAdded[i]);
+                Package["lmieulet:meteor-coverage"].default.SourceMap.registerSourceMap(sourceMapNotAdded[i]);
+                console.log("Self instrumentation meteor-coverage source map saved");
             }
         } else {
-            console.log(name, "not initialized", Package["lmieulet:meteor-coverage"])
+            console.log(name, "not initialized", Package["lmieulet:meteor-coverage"].default, Package["lmieulet:meteor-coverage"])
         }
     } else {
-        console.log(name, "not found", Object.keys(Package))
+        console.error(name, "failed to access to lmieulet:meteor-coverage. Retry in 500ms")
     }
 }, 500)
