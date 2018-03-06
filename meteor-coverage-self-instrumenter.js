@@ -4,16 +4,13 @@
 // applications. See meteor-coverage-self-instrumenter-tests.js for an example of importing.
 export const name = 'meteor-coverage-self-instrumenter';
 import { _ } from 'meteor/underscore';
-import istanbulAPI from 'istanbul-api';
-
-//var im = Npm.require('istanbul-middleware');
-var Hook = istanbulAPI.libHook,
-    Instrument = istanbulAPI.libInstrument;
+const Instrument  = Npm.require('istanbul-lib-instrument'),
+  Hook = Npm.require('istanbul-lib-hook');
 
 /**
  * hooks `runInThisContext` to add instrumentation to matching files when they are loaded on the server
  */
-var instrumenter = Instrument.createInstrumenter(opts);
+const instrumenter = Instrument.createInstrumenter(opts);
 
 var opts = {};
 opts.verbose = true;
@@ -36,14 +33,17 @@ var shallInstrumentServerScript = function (file) {
     return false;
 }
 
-var transformer = instrumenter.instrumentSync.bind(instrumenter);
 Hook.hookRunInThisContext(
-    shallInstrumentServerScript,
-    transformer,
-    {
-        verbose: opts.verbose,
-    }
+  shallInstrumentServerScript,
+  function (code, options) {
+    var filename = typeof options === 'string' ? options : options.filename;
+    return instrumenter.instrumentSync(code, filename);
+  },
+  {
+    verbose: opts.verbose
+  }
 );
+
 /**
 * This package is created before the meteor-coverage package, so it uses this timer to save the source map
 * few ms later the file have been scanned into the map of the package
